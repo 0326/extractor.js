@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>网页正文抽取测试</title>
+  <style>
+    header {
+      background: #eee;
+      height: 10vh;
+      min-height: 60px;
+      text-align: center;
+      border: 2px solid #009a61;
+      border-top-width: 4px;
+      box-sizing: border-box;
+      vertical-align: middle;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pages {
+      clear: both;
+      height: 90vh;
+      overflow: hidden;
+    }
+    .page-box {
+      float: left;
+      width: 50%;
+      height: 90vh;
+      border: 2px solid #009a61;
+      box-sizing: border-box;
+      overflow: scroll;
+    }
+    iframe {
+      width: 100%;
+      height: 90vh;
+    }
+    input {
+      width: 400px;
+      height: 36px;
+      padding: 0 5px;
+      box-sizing: border-box;
+      outline: none;
+    }
+    button {
+      width: 80px;
+      height: 36px;
+      margin-left: -1px;
+      box-sizing: border-box;
+      background: #009a61;
+      color: #fff;
+      cursor: pointer;
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <input placeholder="https://juejin.im/post/5b35921af265da598f1563cf" id="J_Url"/>
+    <button id="J_Submit">访问</button>
+  </header>
+  <section class="pages">
+    <div class="page-box">
+      <iframe id="J_Iframe" src="" frameborder="0"></iframe>
+    </div>
+    <div id="J_Article" class="page-box article-box"></div>
+  </section>
+  <script>
+    function getArticle(url, cb) {
+      var api = `/extract?url=${decodeURIComponent(url)}`;
+      fetch(api).then(res => {
+        return res.json();
+      }).then(res => {
+        cb(res.data);
+      });
+    }
+
+    document.getElementById('J_Submit').addEventListener('click', function() {
+      var value = document.getElementById('J_Url').value;
+      if (!value) {
+        value = 'https://juejin.im/post/5b35921af265da598f1563cf';
+      };
+
+      getArticle(value, function(data) {
+        document.getElementById('J_Article').innerHTML = data;
+      });
+      
+      const $iframe = document.getElementById('J_Iframe');
+      $iframe.onload = function(event) {
+        console.log(event);
+      };
+      $iframe.src = value;
+    });
+  </script>
+</body>
+</html>
